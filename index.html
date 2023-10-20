@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Humans.txt Validator</title>
+    <script>
+        function extractDomain() {
+            // Get the input value
+            var url = document.getElementById("urlInput").value.trim();
+
+            // Regular expression to match and extract the domain
+            var domainRegex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})/;
+
+            var matches = url.match(domainRegex);
+
+            if (matches && matches[3]) {
+                // Extracted domain name
+                var domain = matches[3];
+                // Pass the domain to the engine or display it
+                document.getElementById("output").innerHTML = "Extracted Domain: " + domain;
+
+                // You can also redirect to the engine URL with the extracted domain
+                // window.location.href = "https://your-engine-url/?domain=" + domain;
+            } else {
+                document.getElementById("output").innerHTML = "Invalid URL";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Domain Name Extractor</h1>
+    <input type="text" id="urlInput" placeholder="Enter a web domain (e.g., http://example.com)" style="width: 80%;">
+    <button onclick="extractDomain()">Extract Domain</button>
+    <p id="output"></p>
+</body>
+</html>
