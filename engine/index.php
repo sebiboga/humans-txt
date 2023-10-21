@@ -6,7 +6,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 
 // Set the allowed HTTP headers
-header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Headers: Content-Type, Referrer-Policy");
 
 // Allow credentials (if needed)
 header("Access-Control-Allow-Credentials: true");
