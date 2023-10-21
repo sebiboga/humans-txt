@@ -39,10 +39,38 @@ function addWwwAfterHttps($domain) {
 }
 
 function checkHumansTxtExistence($domain) {
-    $humansTxtURL = $domain . '/humans.txt';
-    $headers = @get_headers($humansTxtURL);
-    
-    return strpos($headers[0], '200 OK') !== false;
+    $url = $domain.'/humans.txt';
+    $headers =[];
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+   
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+     if ($httpCode == 200) {
+        return $response;
+     }
+
+     else {
+
+    if (strpos($response, 'humans.txt') !== false) {
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects
+        $response = curl_exec($ch);
+        $lastEffectiveURL = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+   
+    if ($httpCode == 404) {
+       return false;
+    } elseif (strpos($response, 'humans.txt') !== false) 
+               { 
+        return $response;
+               } 
+                else 
+                     {  return false;
+                     }
+                                                  }
+     }
+    curl_close($ch);
 }
 
 // Remove backslashes and call the function to add the protocol
@@ -52,13 +80,17 @@ $domainWithProtocol = addProtocolToDomain(stripslashes($rawDomain));
 $domainWithWww = addWwwAfterHttps($domainWithProtocol);
 
 // Call the function to check the existence of humans.txt
-$humansTxtExists = checkHumansTxtExistence($domainWithWww);
+ $result = checkHumansTxtExistence($domainWithWww);
+if (!$result) {
+     $result_r = checkHumansTxtExistence($domainWithProtocol);
+       if (!$result_r) {
+            header("HTTP/1.1 404 Not Found"); 
+                      }
+            else { echo $result_r;}
+             }
+              else
+                 {
+                  echo $result;
+                  }
 
-$response = [
-    'domain' => $domainWithWww,
-    'humans.txt' => $humansTxtExists,
-];
-
-header('Content-Type: application/json');
-echo json_encode($response);
 ?>
