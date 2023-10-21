@@ -33,6 +33,11 @@
             <stringProp name="Argument.value">facebook.com</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="domains_6" elementType="Argument">
+            <stringProp name="Argument.name">domains_6</stringProp>
+            <stringProp name="Argument.value">github.com</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </elementProp>
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
