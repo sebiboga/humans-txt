@@ -25,8 +25,9 @@ $rawDomain = isset($_POST['domain']) ? $_POST['domain'] : "https:\/\/peviitor.ro
 $rawDomain = isset($_GET['domain']) ? $_GET['domain'] : $rawDomain;
 
 function discord_webhook($msg) {
-    $date = '  '.date("l d-m-Y H:i:s");
-	$msg = $msg.$date;
+	$prefix ='Found humans.txt at '; 
+    $date = '  on '.date("l d-m-Y H:i:s");
+	$msg =$prefix.$msg.'/humans.txt'.$date;
     $method = 'POST';
 
 	$server_id = '{{SERVER_ID}}'; // Placeholder for the SERVER_ID
