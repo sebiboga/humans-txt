@@ -7,7 +7,11 @@
         const apiUrl = `https://api.peviitor.ro/v0/humans-txt/engine/?domain=${domain}`;
 
         try {
-          const response = await fetch(apiUrl);
+          const response = await fetch(apiUrl, {
+            headers: {
+              "Referrer-Policy": "strict-origin-when-cross-origin",
+            },
+          });
 
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
