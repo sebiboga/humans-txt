@@ -1,35 +1,63 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Humans.txt Validator</title>
     <script>
-        function extractDomain() {
-            // Get the input value
-            var url = document.getElementById("urlInput").value.trim();
+      async function fetchData(domain) {
+        const apiUrl = `https://api.peviitor.ro/v0/humans-txt/engine/?domain=${domain}`;
 
-            // Regular expression to match and extract the domain
-            var domainRegex = /^(https?:\/\/)?(www\.)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})/;
+        try {
+          const response = await fetch(apiUrl);
 
-            var matches = url.match(domainRegex);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
 
-            if (matches && matches[3]) {
-                // Extracted domain name
-                var domain = matches[3];
-                // Pass the domain to the engine or display it
-                document.getElementById("output").innerHTML = "Extracted Domain: " + domain;
-
-                // You can also redirect to the engine URL with the extracted domain
-                // window.location.href = "https://your-engine-url/?domain=" + domain;
-            } else {
-                document.getElementById("output").innerHTML = "Invalid URL";
-            }
+          const data = await response.json(); // Assuming the response is in JSON format
+          return data["humans.txt"] ? "true" : "false";
+        } catch (error) {
+          console.error("Fetch error:", error);
         }
+      }
+      async function extractDomain() {
+        // Get the input value
+        const url = document.getElementById("urlInput").value.trim();
+
+        // Regular expression to match and extract the domain
+        const domainRegex =
+          /^(https?:\/\/)?(www\.)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})/;
+        const matches = url.match(domainRegex);
+
+        const domainElement = document.getElementById("domain");
+        const humansElement = document.getElementById("humans");
+
+        if (matches && matches[3]) {
+          // Extracted domain name
+          const domain = matches[3];
+          const humansTxt = await fetchData(domain);
+          // Pass the domain to the engine or display it
+          domainElement.textContent = "Extracted Domain: " + domain;
+          humansElement.textContent = `humans.txt: ${humansTxt}`;
+          humansElement.style.color = humansTxt === "true" ? "green" : "red";
+          // You can also redirect to the engine URL with the extracted domain
+          // window.location.href = "https://your-engine-url/?domain=" + domain;
+        } else {
+          domainElement.textContent = "Invalid URL";
+          humansElement.textContent = "humans.txt: -";
+        }
+      }
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Domain Name Extractor</h1>
-    <input type="text" id="urlInput" placeholder="Enter a web domain (e.g., http://example.com)" style="width: 80%;">
+    <input
+      type="text"
+      id="urlInput"
+      placeholder="Enter a web domain (e.g., http://example.com)"
+      style="width: 80%"
+    />
     <button onclick="extractDomain()">Extract Domain</button>
-    <p id="output"></p>
-</body>
+    <p id="domain"></p>
+    <p id="humans"></p>
+  </body>
 </html>
