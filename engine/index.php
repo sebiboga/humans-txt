@@ -24,6 +24,31 @@ if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
 $rawDomain = isset($_POST['domain']) ? $_POST['domain'] : "https:\/\/peviitor.ro";
 $rawDomain = isset($_GET['domain']) ? $_GET['domain'] : $rawDomain;
 
+function discord_webhook($msg) {
+	$prefix ='Found humans.txt at '; 
+    $date = '  on '.date("l d-m-Y H:i:s");
+	$msg =$prefix.$msg.'/humans.txt'.$date;
+    $method = 'POST';
+
+	$server_id = '{{SERVER_ID}}'; // Placeholder for the SERVER_ID
+    $channel_id = '{{CHANNEL_ID}}'; // Placeholder for the CHANNEL_ID
+	
+    $url = "https://discord.com/api/webhooks/".$server_id."/".$channel_id;
+    $data = '{"content": "'.$msg.'"}';
+
+    $options = array(
+        'http' => array(
+            'header'  => "Content-type: application/json\r\n",
+            'method'  => 'POST',
+            'content' => $data
+        )
+    );
+    $context  = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    if ($result === FALSE) { /* Handle error */ }
+    
+ }
+
 function addProtocolToDomain($domain) {
     if (strpos($domain, 'http://') !== 0 && strpos($domain, 'https://') !== 0) {
         $domain = 'https://' . $domain; // Add "https://" as the protocol
@@ -86,10 +111,14 @@ if (!$result) {
        if (!$result_r) {
             header("HTTP/1.1 404 Not Found"); 
                       }
-            else { echo $result_r;}
+            else { 
+			 discord_webhook($domainWithProtocol);
+			 echo $result_r;
+			     }
              }
               else
                  {
+				  discord_webhook($domainWithWww);
                   echo $result;
                   }
 
