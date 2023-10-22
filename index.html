@@ -24,6 +24,7 @@
         }
 
         .result-container {
+            display: none;
             max-width: 1200px;
             margin-left: 50px;
             margin-right: 50px;
@@ -122,7 +123,19 @@
           domainElement.textContent = "Invalid URL";
           humansElement.textContent = "humans.txt: -";
         }
+
+        showResultContainer();
       }
+
+      function showResultContainer() {
+        const resultContainerElement = document.querySelector(".result-container");
+
+        if (resultContainerElement) {
+            resultContainerElement.style.display = "block";
+        } else {
+            console.warn("No element with the class 'result-container' found.");
+        }
+      }    
     </script>
   </head>
   <body>
