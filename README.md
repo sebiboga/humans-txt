@@ -22,3 +22,9 @@ Let's not lose sight of the fact that behind all the machines and AI, it is the 
 
 It's an initiative for knowing the people behind a website. It's a TXT file that contains information about the different people who have contributed to building the website. 
 Check more about it on original initiative: [humanstxt.org](http://humanstxt.org)
+
+## Contributors
+
+<a href="https://github.com/sebiboga/humans-txt/graphs/contributors">
+ <img src="https://contrib.rocks/image?repo=sebiboga/humans-txt" />
+</a>
