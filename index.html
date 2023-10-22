@@ -35,7 +35,7 @@
             border-color: #e74c3c;
         }
 
-        .button {
+        #checkButton {
             display: inline-block;
             background-color: #3498db;
             color: #fff;
@@ -47,7 +47,7 @@
             transition: background-color 0.3s;
         }
 
-        .button:hover {
+        #checkButton:hover {
             background-color: #e74c3c;
         }
 
@@ -57,6 +57,15 @@
     </style>
     <title>humans.txt validator</title>
     <script>
+      window.onload = function() {
+        document.getElementById("urlInput").addEventListener("keyup", function(event) {
+          event.preventDefault();
+          if (event.keyCode === 13) { // 13 is Entry key code
+            document.getElementById("checkButton").click();
+          }
+        });
+      }
+
       async function fetchData(domain) {
         const apiUrl = `https://api.peviitor.ro/v0/humans-txt/engine/?domain=${domain}`;
 
@@ -110,7 +119,7 @@
       id="urlInput"
       placeholder="Enter a web domain"   
     />
-         <button class="button" onclick="extractDomain()">check!</button>
+         <button id="checkButton" onclick="extractDomain()">check!</button>
     </div>
   <div style="text-align: center;">
        <p id="domain"></p>
