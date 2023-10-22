@@ -16,3 +16,9 @@ This initiative is about promoting the original message of [humanstxt.org](http:
 Let's not lose sight of the fact that behind all the machines and AI, it is the creativity, empathy, and ingenuity of humans that truly drive progress.
 
 ![Human Intelligence](https://raw.githubusercontent.com/sebiboga/humans-txt/main/assets/humanstxt-isolated-blank.gif)
+
+
+## What is humans.txt?
+
+It's an initiative for knowing the people behind a website. It's a TXT file that contains information about the different people who have contributed to building the website. 
+Check more about it on original initiative: [humanstxt.org](http://humanstxt.org)
