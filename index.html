@@ -13,13 +13,20 @@
             margin: 0;
         }
 
-        .input-container {
+        .input-container,
+        .result-container {
             text-align: center;
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
+        }
+
+        .result-container {
+            max-width: 1200px;
+            margin-left: 50px;
+            margin-right: 50px;
         }
 
         input[type="text"] {
@@ -51,8 +58,15 @@
             background-color: #e74c3c;
         }
 
+        #domain {
+            text-align: center;
+        }
+
         #humans {
           text-align: left;
+          overflow-x: auto;
+          white-space: pre-wrap;
+          word-wrap: break-word;
         }
     </style>
     <title>humans.txt validator</title>
@@ -121,7 +135,7 @@
     />
          <button id="checkButton" onclick="extractDomain()">check!</button>
     </div>
-  <div style="text-align: center;" class="input-container">
+  <div class="result-container">
        <p id="domain"></p>
        <pre id="humans"></pre>
   </div>    
