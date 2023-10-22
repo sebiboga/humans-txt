@@ -1,3 +1,8 @@
 */ TEAM */
 Sebastian Boga  https://github.com/sebiboga
 mademoiselle-chantal https://github.com/mademoiselle-chantal
+Costin https://github.com/VACostin
+Micah Young https://github.com/micahyoung324
+Arash Jafari https://github.com/arashjafari
+Lolo Maku https://github.com/lolomaku
+Chantal https://github.com/mademoiselle-chantal
