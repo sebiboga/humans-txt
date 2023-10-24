@@ -21,8 +21,10 @@ if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
     exit;
 }
 
-$rawDomain = isset($_POST['domain']) ? $_POST['domain'] : "https:\/\/peviitor.ro";
-$rawDomain = isset($_GET['domain']) ? $_GET['domain'] : $rawDomain;
+$rawDomain = $_POST['domain'] ?? $_GET['domain'] ?? '';
+if(empty($rawDomain)) {
+	$rawDomain = 'https:\/\/humanstxt.org';
+}
 
 function discord_webhook($msg) {
 	$prefix ='Found humans.txt at '; 
