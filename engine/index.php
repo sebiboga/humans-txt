@@ -1,121 +1,90 @@
 <?php
 
-// Set the allowed origin (change * to the specific domain you want to allow)
-header("Access-Control-Allow-Origin: *");
+declare(strict_types=1);
 
-// Set the allowed HTTP methods (e.g., GET, POST, PUT, DELETE)
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+const DEFAULT_DOMAIN = 'https://humanstxt.org';
+const SERVER_ID = '{{SERVER_ID}}'; // Placeholder for the SERVER_ID
+const CHANNEL_ID = '{{CHANNEL_ID}}'; // Placeholder for the CHANNEL_ID
 
-// Set the allowed HTTP headers
-header("Access-Control-Allow-Headers: Content-Type, Referrer-Policy");
-
-// Allow credentials (if needed)
-header("Access-Control-Allow-Credentials: true");
-
-// Set the cache expiration time (in seconds) for the preflight request
-header("Access-Control-Max-Age: 3600");
-
-// Handle preflight requests
-if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
-    // This is a preflight request, so just respond with the allowed headers
-    header("HTTP/1.1 200 OK");
-    exit;
-}
-
-$rawDomain = $_POST['domain'] ?? $_GET['domain'] ?? '';
-if (empty($rawDomain)) {
-    $rawDomain = 'https:\/\/humanstxt.org';
-}
-
-function discord_webhook($msg)
+function setCorsHeaders(): void
 {
-    $prefix = 'Found humans.txt at ';
-    $date = '  on ' . date("l d-m-Y H:i:s");
-    $msg = $prefix . $msg . '/humans.txt' . $date;
-
-    $server_id = '{{SERVER_ID}}'; // Placeholder for the SERVER_ID
-    $channel_id = '{{CHANNEL_ID}}'; // Placeholder for the CHANNEL_ID
-
-    $url = "https://discord.com/api/webhooks/" . $server_id . "/" . $channel_id;
-    $data = '{"content": "' . $msg . '"}';
-
-    $options = array(
-        'http' => array(
-            'header'  => "Content-type: application/json\r\n",
-            'method'  => 'POST',
-            'content' => $data
-        )
-    );
-    $context = stream_context_create($options);
-    $result = file_get_contents($url, false, $context);
-    if ($result === false) { /* Handle error */
-    }
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+    header("Access-Control-Allow-Headers: Content-Type, Referrer-Policy");
+    header("Access-Control-Allow-Credentials: true");
+    header("Access-Control-Max-Age: 3600");
 }
 
-function addProtocolToDomain($domain)
+function sendToDiscordWebhook(string $msg): void
 {
-    if (strpos($domain, 'http://') !== 0 && strpos($domain, 'https://') !== 0) {
-        $domain = 'https://' . $domain; // Add "https://" as the protocol
-    }
-    return $domain;
-}
+    $url = 'https://discord.com/api/webhooks/' . SERVER_ID . '/' . CHANNEL_ID;
+    $data = ['content' => $msg];
 
-function addWwwAfterHttps($domain)
-{
-    if (strpos($domain, 'https://www.') !== 0) {
-        $domain = str_replace('https://', 'https://www.', $domain); // Add "www" after "https://"
-    }
-    return $domain;
-}
-
-function checkHumansTxtExistence($domain)
-{
-    $url = $domain . '/humans.txt';
-    $headers = [];
     $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    if ($httpCode == 200) {
-        return $response;
-    } else {
-        if (strpos($response, 'humans.txt') !== false) {
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects
-            $response = curl_exec($ch);
-            $lastEffectiveURL = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-            if ($httpCode == 404) {
-                return false;
-            } elseif (strpos($response, 'humans.txt') !== false) {
-                return $response;
-            } else {
-                return false;
-            }
-        }
-    }
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json'
+    ]);
+    curl_exec($ch);
     curl_close($ch);
 }
 
-// Remove backslashes and call the function to add the protocol
-$domainWithProtocol = addProtocolToDomain(stripslashes($rawDomain));
-
-// Call the function to add "www" after "https://"
-$domainWithWww = addWwwAfterHttps($domainWithProtocol);
-
-// Call the function to check the existence of humans.txt
-$result = checkHumansTxtExistence($domainWithWww);
-if (!$result) {
-    $result_r = checkHumansTxtExistence($domainWithProtocol);
-    if (!$result_r) {
-        header("HTTP/1.1 404 Not Found");
-    } else {
-        discord_webhook($domainWithProtocol);
-        echo $result_r;
+function processUrl(string $domain): string
+{
+    if (!preg_match('/^https?:\/\//', $domain)) {
+        $domain = 'https://' . $domain;
     }
-} else {
-    discord_webhook($domainWithWww);
-    echo $result;
+    if (!preg_match('/^https?:\/\/www\./', $domain)) {
+        $domain = preg_replace('/^https?:\/\//', '$0www.', $domain);
+    }
+    return $domain;
 }
+
+function checkHumansTxtExistence(string $domain): string|bool
+{
+    $url = $domain . '/humans.txt';
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $lastEffectiveURL = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+    curl_close($ch);
+
+    if ($httpCode === 200 && str_ends_with($lastEffectiveURL, 'humans.txt')) {
+        return $response;
+    }
+    return false;
+}
+
+function main(): void
+{
+    setCorsHeaders();
+
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        exit;
+    }
+
+    $domain = filter_input(INPUT_POST, 'domain', FILTER_SANITIZE_URL)
+                ?? filter_input(INPUT_GET, 'domain', FILTER_SANITIZE_URL)
+                ?? DEFAULT_DOMAIN;
+
+    $checkUrls = [
+        processUrl($domain),
+        str_replace('www.', '', processUrl($domain))
+    ];
+
+    foreach ($checkUrls as $url) {
+        $result = checkHumansTxtExistence($url);
+        if ($result) {
+            sendToDiscordWebhook("Found humans.txt at {$url}/humans.txt on " . date('l d-m-Y H:i:s'));
+            echo $result;
+            exit;
+        }
+    }
+
+    header('HTTP/1.1 404 Not Found');
+}
+
+main();
