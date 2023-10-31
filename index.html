@@ -70,6 +70,8 @@
         #domain {
             text-align: center;
             text-shadow: #d74d38;
+            color: white;
+            font-weight: bold;
         }
 
         #humans {
@@ -141,13 +143,14 @@
           const humansTxt = await fetchData(domain);
           // Pass the domain to the engine or display it
           domainElement.textContent = "Extracted Domain: " + domain;
-          humansElement.textContent = humansTxt ? humansTxt : `humans.txt: false`;
-          humansElement.style.color = humansTxt ? "black" : "red";
+          humansElement.textContent = humansTxt ? humansTxt : `humans.txt not found!`;
+          humansElement.style.color = humansTxt ? "#c6c6c6" : "red";
+          humansElement.style.display = "block";
           // You can also redirect to the engine URL with the extracted domain
           // window.location.href = "https://your-engine-url/?domain=" + domain;
         } else {
           domainElement.textContent = "Invalid URL";
-          humansElement.textContent = "humans.txt: -";
+          humansElement.style.display = "none";
         }
 
         showResultContainer();
