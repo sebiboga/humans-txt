@@ -1,186 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <style>
-        body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #f0f0f0;
-            background-image: url('assets/bg-humans.jpg');
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .input-container,
-        .result-container {
-            text-align: center;
-            background-color: #322e2c;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
-            position: relative;
-            top: 10px;
-        }
-
-        .result-container {
-            display: none;
-            max-width: 1200px;
-            margin-left: 50px;
-            margin-right: 50px;
-            max-height: 100%;
-            overflow-y: auto;
-        }
-
-        input[type="text"] {
-            width: 300px;
-            padding: 10px;
-            border: 2px solid #dd532d;
-            border-radius: 5px;
-            outline: none;
-            font-size: 16px;
-        }
-
-        input[type="text"]:focus {
-            border-color: #d74d38;
-        }
-
-        #checkButton {
-            display: inline-block;
-            background-color: #dd532d;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        #checkButton:hover {
-            background-color: #3b88ec;
-        }
-
-        #domain {
-            text-align: center;
-            text-shadow: #d74d38;
-            color: white;
-            font-weight: bold;
-        }
-
-        #humans {
-            text-align: left;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        #logo {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 100px;
-            height: auto;
-            box-shadow: 3px 3px 5px rgba(34, 34, 34, 0.3);
-        }
-
-        #logo2 {
-            background-color: rgb(212 223 230 / 82%);
-            border-radius: 20px; 
-            box-shadow: inset 0 0 10px rgba(59, 59, 59, 0.5);
-            padding: 10px ;
-        }
-        
-    </style>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <script type="text/javascript" src="assets/js/index.js"></script>
     <title>humans.txt validator</title>
     <script>
-      window.onload = function() {
-        document.getElementById("urlInput").addEventListener("keyup", function(event) {
-          event.preventDefault();
-          if (event.keyCode === 13) { // 13 is Entry key code
-            document.getElementById("checkButton").click();
-          }
-        });
-      }
-
-      async function fetchData(domain) {
-        const apiUrl = `https://api.peviitor.ro/v0/humans-txt/engine/?domain=${domain}`;
-
-        try {
-          const response = await fetch(apiUrl);
-
-          if (!response.ok) {
-            return false;
-          }
-
-          const data = await response.text(); // Assuming the response is in JSON format
-          return data;
-        } catch (error) {
-          console.error("Fetch error:", error);
-        }
-      }
-      async function extractDomain() {
-        // Get the input value
-        const url = document.getElementById("urlInput").value.trim();
-
-        // Regular expression to match and extract the domain
-        const domainRegex =
-          /^(https?:\/\/)?(www\.)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})/;
-        const matches = url.match(domainRegex);
-
-        const domainElement = document.getElementById("domain");
-        const humansElement = document.getElementById("humans");
-
-        if (matches && matches[3]) {
-          // Extracted domain name
-          const domain = matches[3];
-          const humansTxt = await fetchData(domain);
-          // Pass the domain to the engine or display it
-          domainElement.textContent = "Extracted Domain: " + domain;
-          humansElement.textContent = humansTxt ? humansTxt : `humans.txt not found!`;
-          humansElement.style.color = humansTxt ? "#c6c6c6" : "red";
-          humansElement.style.display = "block";
-          // You can also redirect to the engine URL with the extracted domain
-          // window.location.href = "https://your-engine-url/?domain=" + domain;
-        } else {
-          domainElement.textContent = "Invalid URL";
-          humansElement.style.display = "none";
-        }
-
-        showResultContainer();
-      }
-
-      function showResultContainer() {
-        const resultContainerElement = document.querySelector(".result-container");
-
-        if (resultContainerElement) {
-            resultContainerElement.style.display = "block";
-        } else {
-            console.warn("No element with the class 'result-container' found.");
-        }
-      }    
     </script>
   </head>
   <body>
     <img id="logo" src="https://raw.githubusercontent.com/gist/stela5/1341927/raw/e508655fcacd2443ad4352dabc536b058e13fbfc/humanstxt-logo.svg" alt="Your Logo">
     <img id="logo2" src="https://www.drupal.org/files/styles/grid-3-2x/public/images/logo-humans.png?itok=M6sLdIhu" alt="human checker">
-        <div class="input-container">
-       <input
-      type="text"
-      id="urlInput"
-      placeholder="Enter a web domain"   
-    />
-         <button id="checkButton" onclick="extractDomain()">check!</button>
+    <div class="input-container">
+      <input
+        type="text"
+        id="urlInput"
+        placeholder="Enter a web domain"
+      />
+      <button id="checkButton" onclick="extractDomain()">check!</button>
     </div>
-  <div class="result-container">
-       <p id="domain"></p>
-       <pre id="humans"></pre>
-  </div>    
+    <div class="result-container">
+      <p id="domain"></p>
+      <pre id="humans"></pre>
+    </div>
   </body>
 </html>

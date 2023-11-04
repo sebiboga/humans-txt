@@ -1,0 +1,94 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #f0f0f0;
+    background-image: url('../images/bg-humans.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.input-container,
+.result-container {
+    text-align: center;
+    background-color: #322e2c;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    position: relative;
+    top: 10px;
+}
+
+.result-container {
+    display: none;
+    max-width: 1200px;
+    margin-left: 50px;
+    margin-right: 50px;
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+input[type="text"] {
+    width: 300px;
+    padding: 10px;
+    border: 2px solid #dd532d;
+    border-radius: 5px;
+    outline: none;
+    font-size: 16px;
+}
+
+input[type="text"]:focus {
+    border-color: #d74d38;
+}
+
+#checkButton {
+    display: inline-block;
+    background-color: #dd532d;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#checkButton:hover {
+    background-color: #3b88ec;
+}
+
+#domain {
+    text-align: center;
+    text-shadow: #d74d38;
+    color: white;
+    font-weight: bold;
+}
+
+#humans {
+    text-align: left;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+#logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 100px;
+    height: auto;
+    box-shadow: 3px 3px 5px rgba(34, 34, 34, 0.3);
+}
+
+#logo2 {
+    background-color: rgb(212 223 230 / 82%);
+    border-radius: 20px;
+    box-shadow: inset 0 0 10px rgba(59, 59, 59, 0.5);
+    padding: 10px ;
+}
