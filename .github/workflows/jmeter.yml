@@ -43,5 +43,5 @@ jobs:
           username: ${{secrets.FTP_USER}}
           password: ${{secrets.FTP_PASSWD}}
           method: ftp
-          local_dir: .
+          local_dir: ./engine
           remote_dir: /api.peviitor.ro/v0/humans-txt
